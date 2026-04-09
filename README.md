@@ -217,6 +217,9 @@ The downloaded OpenAPI spec and generated sources are post-processed by `OpenAPI
 - [Five Stars: Reviews & Ratings](https://apps.apple.com/app/id1634650919) developed by [Mathias Emil Mortensen](https://github.com/mathiasemil).
   Five Stars helps app developers read and reply to App Store reviews from their users. Translate reviews, reply with customizable templates and AI-powered quick replies, filter by region, and view global app ratings from any app. Five Stars is available for iPhone and iPad, with a Mac version coming in Spring 2024.
 
+- [StackConnect](https://apps.apple.com/br/app/stackconnect/id6761390987?l=en-GB) developed by [Rubens Machion](https://github.com/r1b2ns).
+  StackConnect is an app built with the App Store Connect Swift SDK that helps developers manage their App Store Connect workflows.
+
 ## License
 
 **App Store Connect Swift SDK** is available under the MIT license, and uses source code from open source projects. See the [LICENSE](https://github.com/AvdLee/appstoreconnect-swift-sdk/blob/master/LICENSE) file for more info.
