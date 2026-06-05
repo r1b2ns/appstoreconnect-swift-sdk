@@ -14,7 +14,10 @@ var targetDependencies: [Target.Dependency] = [
     .product(name: "Crypto", package: "swift-crypto")
 ]
 
-#if os(Linux) || os(Windows)
+// OpenCombine backs Combine on Linux. On Windows neither Combine nor OpenCombine
+// is available, so the SDK's Combine-based rate-limit publisher is compiled out
+// (see APIProvider.swift) and no Combine dependency is needed there.
+#if os(Linux)
 dependencies.append(.package(url: "https://github.com/OpenCombine/OpenCombine.git", from: "0.14.0"))
 targetDependencies.append(.product(name: "OpenCombine", package: "OpenCombine"))
 #endif

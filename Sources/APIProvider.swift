@@ -6,9 +6,12 @@
 //
 
 import Foundation
-#if os(Linux)
+// Combine is Apple-only; OpenCombine covers Linux. On platforms with neither
+// (e.g. Windows), the Combine-based rate-limit publisher is compiled out and the
+// SDK is used through its async/await + completion-handler API.
+#if canImport(OpenCombine)
 import OpenCombine
-#else
+#elseif canImport(Combine)
 import Combine
 #endif
 #if canImport(FoundationNetworking)
@@ -230,8 +233,10 @@ public final class APIProvider {
     /// The JSON encoder used to encode request parameters.
     private let encoder: JSONEncoder
     
+    #if canImport(Combine) || canImport(OpenCombine)
     /// Exposes rate limit continously as requests are made.
     public let rateLimitPublisher = PassthroughSubject<RateLimit, Never>()
+    #endif
 
     /// Creates a new APIProvider instance which can be used to perform API Requests to the App Store Connect API.
     ///
@@ -332,9 +337,11 @@ private extension APIProvider {
     func mapResponse<T: Decodable>(_ result: Result<Response<Data>, Swift.Error>) -> Result<T, Swift.Error> {
         switch result {
         case .success(let response):
+            #if canImport(Combine) || canImport(OpenCombine)
             if let rateLimit = response.rateLimit {
                 rateLimitPublisher.send(rateLimit)
             }
+            #endif
             
             guard let data = response.data, 200..<300 ~= response.statusCode else {
                 return .failure(Error.requestFailure(response.statusCode, response.errorResponse, response.requestURL))
@@ -362,9 +369,11 @@ private extension APIProvider {
     func mapVoidResponse(_ result: Result<Response<Data>, Swift.Error>) -> Result<Void, Swift.Error> {
         switch result {
         case .success(let response):
+            #if canImport(Combine) || canImport(OpenCombine)
             if let rateLimit = response.rateLimit {
                 rateLimitPublisher.send(rateLimit)
             }
+            #endif
             
             guard 200..<300 ~= response.statusCode else {
                 return .failure(Error.requestFailure(response.statusCode, response.errorResponse, response.requestURL))
@@ -383,9 +392,11 @@ private extension APIProvider {
     func mapResponse(_ result: Result<Response<URL>, Swift.Error>) -> Result<URL, Swift.Error> {
         switch result {
         case .success(let response):
+            #if canImport(Combine) || canImport(OpenCombine)
             if let rateLimit = response.rateLimit {
                 rateLimitPublisher.send(rateLimit)
             }
+            #endif
             
             guard 200..<300 ~= response.statusCode else {
                 return .failure(Error.requestFailure(response.statusCode, response.errorResponse, response.requestURL))
